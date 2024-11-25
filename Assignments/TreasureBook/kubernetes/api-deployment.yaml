@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: treasurebook-api
+  labels:
+    app: treasurebook-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: treasurebook-api
+  template:
+    metadata:
+      labels:
+        app: treasurebook-api
+    spec:
+      containers:
+      - name: treasurebook-api
+        image: treasurebook-api:latest
+        ports:
+        - containerPort: 5000
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: treasurebook-api-service
+spec:
+  type: NodePort
+  selector:
+    app: treasurebook-api
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+    nodePort: 30001

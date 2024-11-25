@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: treasurebook-mongo
+  labels:
+    app: treasurebook-mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: treasurebook-mongo
+  template:
+    metadata:
+      labels:
+        app: treasurebook-mongo
+    spec:
+      containers:
+      - name: treasurebook-mongo
+        image: mongo:latest
+        ports:
+        - containerPort: 27017
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: treasurebook-mongo-service
+spec:
+  type: ClusterIP
+  selector:
+    app: treasurebook-mongo
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017

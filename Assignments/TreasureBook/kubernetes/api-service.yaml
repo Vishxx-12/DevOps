@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: treasurebook-api-service
+spec:
+  type: NodePort  # Use LoadBalancer for cloud environments
+  selector:
+    app: treasurebook-api
+  ports:
+  - protocol: TCP
+    port: 5000          # Service port
+    targetPort: 5000    # Container port
+    nodePort: 30001     # Expose on node port
