@@ -2,7 +2,7 @@
 
 ## **Objective**
 You are a DevOps engineer in ZAPPTTO managing a fast-paced delivery service that needs real-time insights into operational efficiency and delivery performance.
-You task is to create monitoring application top provide insights on performance of the delivery service.
+You task is to create monitoring application to provide insights on performance of the delivery service.
 
 ## **Approach**
 Using Python, Prometheus, Grafana and Jenkins, create a pipeline that simulates delivery metrics, visualizes them on dashboards and sets up automated alerts to ensure smooth operations and quick problem detection.
