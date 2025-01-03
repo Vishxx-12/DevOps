@@ -155,7 +155,7 @@ process_resident_memory_bytes 2.3887872e+07
 
 ### **Step 2a: Configure Prometheus**
 
-Create a file named **prometheus.ym**
+Create a file named **prometheus.yml**
 
 ```
 scrape_configs:
