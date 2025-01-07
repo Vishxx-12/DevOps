@@ -2,22 +2,43 @@ version: '3.8'
 
 services:
   ai-artistic-style-service:
-    image: urmsandeep/ai-artistic-style-service:latest
-    container_name: ai-artistic-style
+    image: urmsandeep/ai-artistic-style-service
+    container_name: ai-artistic-style-service
     ports:
       - "5001:5001"
     restart: always
+    volumes:
+      - ./tests:/app/tests  # Assuming you want to mount the tests directory
+    environment:
+      - PYTHONUNBUFFERED=1  
+
+  prometheus-http-exporter:
+    image: prom/blackbox-exporter
+    container_name: prometheus-http-exporter
+    ports:
+      - "9999:9115"
+    restart: always
 
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
+    restart: always
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana
     container_name: grafana
     ports:
       - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: always
+
+volumes:
+  grafana-data:

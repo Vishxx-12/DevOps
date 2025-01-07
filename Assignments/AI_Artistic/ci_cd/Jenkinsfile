@@ -1,6 +1,13 @@
 pipeline {
     agent any
+
     stages {
+        stage('Clean Workspace') {
+    steps {
+        cleanWs()
+    }
+}
+
         stage('Pull Docker Image') {
             steps {
                 script {
