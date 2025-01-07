@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "ai-artistic-style-service"
+    static_configs:
+      - targets: ["ai-artistic-style:5001"]
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
