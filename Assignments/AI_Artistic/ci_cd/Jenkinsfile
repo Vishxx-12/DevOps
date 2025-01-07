@@ -1,51 +1,66 @@
 pipeline {
     agent any
-
     stages {
         stage('Pull Docker Image') {
             steps {
                 script {
-                    sh 'docker pull urmsandeep/ai-artistic-style-service:latest'
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                script {
-                    sh '''
-                    docker run --rm -p 5001:5001 urmsandeep/ai-artistic-style-service:latest pytest tests/
+                    powershell '''
+                    docker pull urmsandeep/ai-artistic-style-service:latest
                     '''
                 }
             }
         }
-
+        stage('Run Tests') {
+            steps {
+                script {
+                    powershell '''
+                    # Start the container in detached mode
+                    docker run -d --name ai-artistic-style-service urmsandeep/ai-artistic-style-service:latest
+                    # Install pytest inside the running container
+                    docker exec ai-artistic-style-service pip install pytest
+                    # Run the tests
+                    docker exec ai-artistic-style-service pytest tests/
+                    # Stop and remove the container after testing
+                    docker stop ai-artistic-style-service
+                    docker rm ai-artistic-style-service
+                    '''
+                }
+            }
+        }
         stage('Deploy Service') {
             steps {
                 script {
-                    sh '''
+                    powershell '''
                     docker-compose down
                     docker-compose up -d
                     '''
                 }
             }
         }
-
         stage('Verify Deployment') {
-            steps {
-                script {
-                    sh '''
-                    sleep 5
-                    curl -X POST http://127.0.0.1:5001/styleTransfer -F "image=@input/sample.jpg" --output output/styled_image.jpg
-                    '''
-                }
-            }
+    steps {
+        script {
+            bat '''
+            ping 127.0.0.1 -n 6 > nul
+            if exist test.jpg (
+                curl -X POST http://127.0.0.1:5001/styleTransfer -F "image=@test.jpg" --output styled_output.jpg
+            ) else (
+                echo File "test.jpg" not found & exit /b 1
+            )
+            '''
         }
     }
+}
 
+        
+    }
     post {
         always {
-            sh 'docker system prune -f'
+            script {
+                powershell '''
+                docker system prune -f
+                '''
+            }
         }
         success {
             echo 'Pipeline executed successfully. The service is running and functional!'
